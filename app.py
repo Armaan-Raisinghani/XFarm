@@ -166,7 +166,7 @@ def get_data(html_object):
                     if value == "date":
                         row[value] = datetime.datetime.strptime(
                             val.text.strip(), "%d %b %Y"
-                        ).date()
+                        ).timestamp()
                     else:
                         row[value] = val.text.strip()
             data.append(row)
@@ -176,7 +176,6 @@ def get_data(html_object):
     return data
 
 
-@app.post("/market_analysis")
 @app.post("/market_analysis/")
 async def market_analysis(district: str, commodity: str, state: str, market: str):
     """
@@ -637,13 +636,13 @@ async def market_analysis(district: str, commodity: str, state: str, market: str
     "Uttrakhand": "UC",
     "West Bengal": "WB"}
     try:
-        url = f"https://agmarknet.gov.in/SearchCmmMkt.aspx?Tx_Commodity={commodities[commodity]}&Tx_State={states[state]}&Tx_District=0&Tx_Market=0&DateFrom=01-Mar-2025&DateTo=02-Mar-2025&Fr_Date=01-Mar-2025&To_Date=02-Mar-2025&Tx_Trend=0&Tx_CommodityHead={commodity}&Tx_StateHead={state}&Tx_DistrictHead=--Select--&Tx_MarketHead=--Select--"
+        url = f"https://agmarknet.gov.in/SearchCmmMkt.aspx?Tx_Commodity={commodities[commodity]}&Tx_State={states[state]}&Tx_District=0&Tx_Market=0&DateFrom=24-Mar-2025&DateTo=31-Mar-2025&Fr_Date=24-Mar-2025&To_Date=31-Mar-2025&Tx_Trend=0&Tx_CommodityHead={commodity}&Tx_StateHead={state}&Tx_DistrictHead=--Select--&Tx_MarketHead=--Select--"
         print(url)
         response = requests.get(url)
         soup = BeautifulSoup(response.content, "html.parser")
         data = get_data(soup)
         print(data)
-        return JSONResponse(content=data[0])
+        return JSONResponse(content=data)
     except Exception as e:
         return JSONResponse(
             status_code=400, content={"error": f"Error fetching data: {str(e)}"}
